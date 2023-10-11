@@ -1,0 +1,56 @@
+Sub TickerLoop():
+    For Each ws In Worksheets
+        Dim Ticker_Name As String
+        Dim Summary_Table_Row As Integer
+        Dim Year_Begin As Long
+        Dim Year_End As Long
+        Dim Initial_Open As Double
+        Dim Final_Close As Double
+        Dim Yearly_Change As Double
+        Dim Percent_Change As Double
+        Dim Total_Volume As Double
+        Dim Increase_Value As Double
+        Dim Decrease_Value As Double
+        Dim Volume_Value As Double
+        Summary_Table_Row = 2
+        LastRow = Cells(Rows.Count, 1).End(xlUp).Row
+        Year_Begin = Application.WorksheetFunction.Min(Range("B:B"))
+        Year_End = Application.WorksheetFunction.Max(Range("B:B"))
+        Total_Volume = 0
+        Increase_Value = Cells(2, 17).Value
+        Decrease_Value = Cells(3, 17).Value
+        Volume_Value = Cells(4, 17).Value
+            For I = 2 To LastRow
+                If Cells(I + 1, 1).Value <> Cells(I, 1).Value Then
+                    Ticker_Name = Cells(I, 1).Value
+                    Range("I" & Summary_Table_Row).Value = Ticker_Name
+                End If
+                If Cells(I, 2).Value = Year_Begin Then
+                    Initial_Open = Cells(I, 3).Value
+                ElseIf Cells(I, 2).Value = Year_End Then
+                    Final_Close = Cells(I, 6).Value
+                    Yearly_Change = (Final_Close - Initial_Open)
+                    Range("J" & Summary_Table_Row).Value = Yearly_Change
+                    Percent_Change = Yearly_Change / Initial_Open
+                    Range("K" & Summary_Table_Row).Value = Percent_Change
+                End If
+                If Cells(I + 1, 1).Value <> Cells(I, 1).Value Then
+                    Total_Volume = Total_Volume + Cells(I, 7).Value
+                    Range("L" & Summary_Table_Row).Value = Total_Volume
+                    Summary_Table_Row = Summary_Table_Row + 1
+                    Total_Volume = 0
+                Else
+                    Total_Volume = Total_Volume + Cells(I, 7).Value
+                End If
+                If Increase_Value = Cells(I, 11).Value Then
+                    Cells(2, 16).Value = Cells(I, 9).Value
+                End If
+                If Decrease_Value = Cells(I, 11).Value Then
+                    Cells(3, 16).Value = Cells(I, 9).Value
+                End If
+                If Volume_Value = Cells(I, 12).Value Then
+                    Cells(4, 16).Value = Cells(I, 9).Value
+                End If
+            Next I
+    Next ws
+End Sub
